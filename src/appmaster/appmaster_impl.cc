@@ -535,7 +535,11 @@ void AppMasterImpl::RecoverInstance(::google::protobuf::RpcController* controlle
                                     const ::baidu::galaxy::proto::RecoverInstanceRequest* request,
                                     ::baidu::galaxy::proto::RecoverInstanceResponse* response,
                                     ::google::protobuf::Closure* done) {
-    Status status = job_manager_.RecoverPod(request->user(), request->jobid(), request->podid());
+    std::string pod_id;
+    if (request->has_podid()) {
+        pod_id = request->podid();
+    }
+    Status status = job_manager_.RecoverPod(request->user(), request->jobid(), pod_id);
     LOG(INFO) << "DEBUG: RecoverInstance req"
         << request->DebugString()
         << "DEBUG END";

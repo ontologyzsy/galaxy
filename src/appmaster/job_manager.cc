@@ -1360,6 +1360,17 @@ Status JobManager::RecoverPod(const User& user, const std::string jobid, const s
     if (job->user_.user() != user.user() || job->user_.token() != user.token()) {
         return kUserNotMatch;
     }
+    if (podid.empty()) {
+        std::map<std::string, PodInfo*>::iterator it = job->pods_.find(podid);
+        for (; it != job->pods_.end(); it++) {
+            PodInfo* pod = it->second;
+            if (pod->status() == kPodFailed) {
+                pod->set_last_normal_time(0);
+                LOG(INFO) << __FUNCTION__ << " : " << podid;
+            }
+        }
+        return kOk;
+    }
     std::map<std::string, PodInfo*>::iterator it = job->pods_.find(podid);
     if (it == job->pods_.end()) {
         return kPodNotFound;
