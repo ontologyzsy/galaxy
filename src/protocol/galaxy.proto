@@ -176,6 +176,7 @@ enum JobEvent {
     kPauseUpdate = 6;
     kUpdateContinue = 7;
     kUpdateRollback = 8;
+    kUpdateCancel = 9;
 }
 
 // Task or pod

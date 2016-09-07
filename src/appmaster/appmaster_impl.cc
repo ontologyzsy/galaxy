@@ -377,6 +377,18 @@ void AppMasterImpl::UpdateJob(::google::protobuf::RpcController* controller,
         VLOG(10) << response->DebugString();
         done->Run();
         return;
+    } else if (request->has_operate() && request->operate() == kUpdateJobCancel) {
+        Status status = job_manager_.CancelUpdate(request->jobid());
+        if (status != kOk) {
+            response->mutable_error_code()->set_status(status);
+            response->mutable_error_code()->set_reason(Status_Name(status));
+            done->Run();
+            return;
+        }
+        response->mutable_error_code()->set_status(status);
+        response->mutable_error_code()->set_reason("cancel update job ok");
+        done->Run();
+        return;
     }
     
     MutexLock lock(&resman_mutex_);
